@@ -1,9 +1,9 @@
 spring:
   application:
-    name: next-course-service
+    name: ucla-course-service
 
   datasource:
-    url: jdbc:mysql://localhost:3306/next_course?useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/ucla_course?useSSL=false&allowPublicKeyRetrieval=true
     driverClassName: com.mysql.cj.jdbc.Driver
     username: ucla
     password: campus

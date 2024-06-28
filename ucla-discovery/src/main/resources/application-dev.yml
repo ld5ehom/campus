@@ -7,12 +7,12 @@ spring:
 
 eureka:
   instance:
-    hostname: ucla-discovery
+    hostname: localhost
     registry:
       default-open-for-traffic-count: 1 # 0으로 지정한 경우 서버 Replication 활성화 가능 (디폴트 1)
   client:
-    registerWithEureka: false # 레지스트리에 자신을 등록할지에 대한 여부 (디폴트 true)
-    fetchRegistry: false # 레지스트리에 있는 정보를 가져올지에 대한 여부 (디폴트 true), 30초마다 Eureka Client 가 유레카 레지스트리 변경 사항 여부 재확인
+    registerWithEureka: true # 레지스트리에 자신을 등록할지에 대한 여부 (디폴트 true)
+    fetchRegistry: true # 레지스트리에 있는 정보를 가져올지에 대한 여부 (디폴트 true), 30초마다 Eureka Client 가 유레카 레지스트리 변경 사항 여부 재확인
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
     region: default
