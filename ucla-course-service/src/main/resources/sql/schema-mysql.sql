@@ -22,7 +22,7 @@ CREATE TABLE COURSES
     course_id     INT          NOT NULL     AUTO_INCREMENT COMMENT '강의의 고유 식별자',
     title         VARCHAR(255) NOT NULL COMMENT '강의 제목',
     description   TEXT         NULL     COMMENT '강의에 대한 자세한 설명',
-    instructor_id INT          NOT NULL COMMENT '강사의 식별자, 외래 키로 사용될 수 있음',
+    professor_id INT          NOT NULL COMMENT '강사의 식별자, 외래 키로 사용될 수 있음',
     created_at    DATETIME     NULL     DEFAULT CURRENT_TIMESTAMP COMMENT '강의 생성 시간',
     PRIMARY KEY (course_id)
 ) COMMENT '강의 기본 정보를 저장하는 테이블';

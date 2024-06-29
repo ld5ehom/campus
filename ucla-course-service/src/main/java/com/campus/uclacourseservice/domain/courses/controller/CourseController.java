@@ -38,7 +38,7 @@ public class CourseController {
     public ResponseEntity<Course> getCourseById(
             @PathVariable Long courseId) {
         Course course = courseService.getCourseById(courseId)
-                .orElseThrow(() -> new RuntimeException("ID가 " + courseId + "인 코스를 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException("ID : " + courseId + "인 코스를 찾을 수 없습니다."));
         return ResponseEntity.ok(course);
     }
 

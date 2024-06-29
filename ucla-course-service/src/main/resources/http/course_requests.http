@@ -5,7 +5,7 @@ Content-Type: application/json
 {
   "title": "Introduction to Java",
   "description": "A comprehensive course on Java programming",
-  "instructorId": 1,
+  "professorId": 1,
   "createdAt": "2024-06-10T15:00:00Z"
 }
 
@@ -16,7 +16,7 @@ Content-Type: application/json
 {
   "title": "Advanced Java Concepts",
   "description": "Deep dive into advanced Java topics",
-  "instructorId": 1,
+  "professorId": 1,
   "createdAt": "2024-06-10T15:00:00Z"
 }
 

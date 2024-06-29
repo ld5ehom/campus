@@ -41,12 +41,12 @@ public class CourseServiceTest {
         existingCourse.setId(1L);
         existingCourse.setTitle("Original Title");
         existingCourse.setDescription("Original Description");
-        existingCourse.setInstructorId(100L);
+        existingCourse.setProfessorId(100L);
 
         Course updatedDetails = new Course();
         updatedDetails.setTitle("Updated Title");
         updatedDetails.setDescription("Updated Description");
-        updatedDetails.setInstructorId(101L);
+        updatedDetails.setProfessorId(101L);
 
         when(courseRepository.findById(1L)).thenReturn(Optional.of(existingCourse));
         when(courseRepository.save(any(Course.class))).thenReturn(updatedDetails);
@@ -58,7 +58,7 @@ public class CourseServiceTest {
         verify(courseRepository).save(existingCourse);
         assertEquals("Updated Title", result.getTitle());
         assertEquals("Updated Description", result.getDescription());
-        assertEquals(101L, result.getInstructorId());
+        assertEquals(101L, result.getProfessorId());
     }
 
     @Test

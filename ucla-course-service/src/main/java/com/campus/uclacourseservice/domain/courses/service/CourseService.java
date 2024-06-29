@@ -27,7 +27,7 @@ public class CourseService {
                 .orElseThrow(() -> new RuntimeException("Course not found with id " + courseId));
         course.setTitle(courseDetails.getTitle());
         course.setDescription(courseDetails.getDescription());
-        course.setInstructorId(courseDetails.getInstructorId());
+        course.setProfessorId(courseDetails.getProfessorId());
         return courseRepository.save(course);
     }
 

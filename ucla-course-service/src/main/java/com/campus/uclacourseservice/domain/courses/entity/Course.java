@@ -28,7 +28,7 @@ public class Course {
     private String description;
 
     @Column(name = "professor_id", nullable = false)
-    private Long instructorId;
+    private Long professorId;
 
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
