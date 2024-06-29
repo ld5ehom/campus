@@ -1,21 +1,21 @@
 CREATE TABLE COURSE_RATINGS
 (
-    rating_id  INT      NOT NULL     AUTO_INCREMENT COMMENT '평가의 고유 식별자',
-    course_id  INT      NOT NULL COMMENT '평가가 속한 강의의 ID, COURSES 테이블 참조',
-    user_id    INT      NOT NULL COMMENT '평가를 남긴 사용자의 ID',
-    rating     TINYINT  NOT NULL COMMENT '사용자가 부여한 평점 (1-5)',
-    comment    TEXT     NULL     COMMENT '사용자가 남긴 평가 코멘트',
+    rating_id  INT      NOT NULL     AUTO_INCREMENT COMMENT 'Rating ID',
+    course_id  INT      NOT NULL COMMENT 'Course ID, COURSES 테이블 참조',
+    user_id    INT      NOT NULL COMMENT 'Comment User ID',
+    rating     TINYINT  NOT NULL COMMENT 'Rating (1-5)',
+    comment    TEXT     NULL     COMMENT 'User Comment',
     created_at DATETIME NULL     DEFAULT CURRENT_TIMESTAMP COMMENT '레코드 생성 시간',
     PRIMARY KEY (rating_id)
-) COMMENT '사용자의 강의 평가 정보를 저장하는 테이블';
+) COMMENT 'Course Rating Table';
 
 CREATE TABLE COURSE_SESSIONS
 (
-    session_id INT          NOT NULL     AUTO_INCREMENT COMMENT '세션의 고유 식별자',
+    session_id INT          NOT NULL     AUTO_INCREMENT COMMENT 'session ID',
     course_id  INT          NOT NULL COMMENT '해당 세션이 속한 강의의 ID, COURSES 테이블 참조',
-    title      VARCHAR(255) NOT NULL COMMENT '세션의 제목',
+    title      VARCHAR(255) NOT NULL COMMENT 'session title',
     PRIMARY KEY (session_id)
-) COMMENT '각 강의의 세션들을 관리하는 테이블';
+) COMMENT 'Course Session Table';
 
 CREATE TABLE COURSES
 (
