@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package com.campus.uclaplaybackservice.domain.service;
+
+// PlaybackService provides media playback record and event logging services.
+service PlaybackService {
+  // StartRecord initiates a new playback record.
+  rpc StartRecord(StartRecordRequest) returns (StartRecordResponse);
+
+  // EndRecord terminates a playback record.
+  rpc EndRecord(EndRecordRequest) returns (EndRecordResponse);
+
+  // LogEvent logs an event that occurs during playback.
+  rpc LogEvent(LogEventRequest) returns (LogEventResponse);
+}
+
+// Playback record information
+message PlaybackRecord {
+  int64 record_id = 1;  // Playback record ID
+  int64 user_id = 2;    // User ID
+  int64 file_id = 3;    // File ID
+  int64 start_time = 4;  // Start time (UNIX timestamp)
+  int64 end_time = 5;    // End time (UNIX timestamp)
+}
+
+// Event log information
+message EventLog {
+  int64 event_id = 1;     // Event ID
+  int64 record_id = 2;   // Related playback session ID
+  int64 user_id = 3;      // User ID
+  string event_type = 4;   // Event type (e.g., 'play', 'pause', 'stop')
+  int64 timestamp = 5;     // Event occurrence time (UNIX timestamp)
+}
+
+// Playback record start request message
+message StartRecordRequest {
+  int64 user_id = 1;      // User ID
+  int64 file_id = 2;      // File ID
+}
+
+// Playback record start response message
+message StartRecordResponse {
+  PlaybackRecord record = 1; // Started playback record information
+}
+
+// Playback record end request message
+message EndRecordRequest {
+  int64 record_id = 1;   // Playback record ID
+}
+
+// Playback record end response message
+message EndRecordResponse {
+  PlaybackRecord record = 1; // Ended playback record information
+}
+
+// Event logging request message
+message LogEventRequest {
+  EventLog event = 1;      // Event to be logged
+}
+
+// Event logging response message
+message LogEventResponse {
+  EventLog event = 1;      // Logged event information
+}
