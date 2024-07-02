@@ -1,6 +1,6 @@
 rootProject.name = 'ucla-campus'
 include 'ucla-grpc-common'
-//include 'ucla-playback-service'
+include 'ucla-playback-service'
 include 'ucla-course-service'
 include 'ucla-discovery'
 include 'ucla-file-manage-service'

@@ -2,15 +2,15 @@ syntax = "proto3";
 
 package com.campus.uclaplaybackservice.domain.service;
 
-// PlaybackService provides media playback record and event logging services.
+// PlaybackService provides media playback recording and event logging services.
 service PlaybackService {
-  // StartRecord initiates a new playback record.
+  // StartRecord starts a new playback record.
   rpc StartRecord(StartRecordRequest) returns (StartRecordResponse);
 
-  // EndRecord terminates a playback record.
+  // EndRecord ends a playback record.
   rpc EndRecord(EndRecordRequest) returns (EndRecordResponse);
 
-  // LogEvent logs an event that occurs during playback.
+  // LogEvent logs events that occur during playback.
   rpc LogEvent(LogEventRequest) returns (LogEventResponse);
 }
 
@@ -26,7 +26,7 @@ message PlaybackRecord {
 // Event log information
 message EventLog {
   int64 event_id = 1;     // Event ID
-  int64 record_id = 2;   // Related playback session ID
+  int64 record_id = 2;   // Associated playback session ID
   int64 user_id = 3;      // User ID
   string event_type = 4;   // Event type (e.g., 'play', 'pause', 'stop')
   int64 timestamp = 5;     // Event occurrence time (UNIX timestamp)
