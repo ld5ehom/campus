@@ -1,0 +1,156 @@
+syntax = "proto3";
+
+package com.campus.uclaenrollmentservice.domain.service;
+
+// EnrollmentService provides course registration and subscription management services.
+service EnrollmentService {
+  // RegisterCourse processes a new course registration request.
+  rpc RegisterCourse(CourseRegistrationRequest) returns (CourseRegistrationResponse);
+
+  // ManageSubscription processes a request to register a new subscription for a user.
+  rpc ManageSubscription(SubscriptionRequest) returns (SubscriptionResponse);
+
+  // RenewSubscription processes a request to renew an existing subscription.
+  rpc RenewSubscription(RenewSubscriptionRequest) returns (SubscriptionResponse);
+
+  // CheckCourseAccess verifies if a specific user can access a specific course.
+  rpc CheckCourseAccess(CourseAccessRequest) returns (CourseAccessResponse);
+
+  // CheckSubscriptionAccess verifies if a specific user can access a specific subscription.
+  rpc CheckSubscriptionAccess(SubscriptionAccessRequest) returns (SubscriptionAccessResponse);
+
+  // GetUserEnrollments retrieves all course enrollment records for a specific user.
+  rpc GetUserEnrollments(UserEnrollmentsRequest) returns (UserEnrollmentsResponse);
+
+  // GetUserPlanSubscriptions retrieves all subscription records for a specific user.
+  rpc GetUserPlanSubscriptions(UserSubscriptionsRequest) returns (UserSubscriptionsResponse);
+}
+
+// FakePaymentService provides simulated payment-related services.
+service FakePaymentService {
+  // CreatePayment simulates the creation of a payment transaction.
+  rpc CreatePayment(PaymentRequest) returns (PaymentResponse);
+
+  // ListUserPayments retrieves all payment records for a specific user.
+  rpc ListUserPayments(UserPaymentsRequest) returns (UserPaymentsResponse);
+
+  // GetPaymentsByPaymentId retrieves payment records corresponding to a specific payment ID.
+  rpc GetPaymentsByPaymentId(PaymentsByIdRequest) returns (PaymentsByIdResponse);
+}
+
+// Request and response message definitions for EnrollmentService
+message CourseRegistrationRequest {
+  int64 user_id = 1; // User ID
+  int64 course_id = 2; // Course ID
+  int64 payment_id = 3; // Payment ID
+}
+
+message CourseRegistrationResponse {
+  int64 course_id = 1; // Course ID
+  int64 user_id = 2; // User ID
+  int64 registration_date = 3; // Registration date (Unix timestamp)
+}
+
+message SubscriptionRequest {
+  int64 user_id = 1; // User ID
+  int64 start_date = 2; // Start date (Unix timestamp)
+  int64 end_date = 3; // End date (Unix timestamp)
+  int64 payment_id = 4; // Payment ID
+}
+
+message RenewSubscriptionRequest {
+  int64 subscription_id = 1; // Subscription ID
+  int64 start_date = 2; // Start date (Unix timestamp)
+  int64 end_date = 3; // End date (Unix timestamp)
+}
+
+message SubscriptionResponse {
+  Subscription subscription = 1; // Subscription information
+}
+
+message CourseAccessRequest {
+  int64 course_id = 1; // Course ID
+  int64 user_id = 2; // User ID
+}
+
+message CourseAccessResponse {
+  int64 course_id = 1; // Course ID
+  bool has_access = 2; // Access permission
+}
+
+message SubscriptionAccessRequest {
+  int64 user_id = 1; // User ID
+}
+
+message SubscriptionAccessResponse {
+  int64 subscription_id = 1; // Subscription ID
+  bool has_access = 2; // Access permission
+}
+
+message UserEnrollmentsRequest {
+  int64 user_id = 1; // User ID
+}
+
+message UserEnrollmentsResponse {
+  repeated Enrollment enrollments = 1; // All course enrollment records for the user
+}
+
+message Enrollment {
+  int64 enrollment_id = 1; // Enrollment ID
+  int64 user_id = 2; // User ID
+  int64 course_id = 3; // Course ID
+  int64 registration_date = 4; // Registration date (Unix timestamp)
+  string status = 5; // Enrollment status (e.g., Active, Completed)
+  int64 payment_id = 6; // Payment ID
+}
+
+message UserSubscriptionsRequest {
+  int64 user_id = 1; // User ID
+}
+
+message UserSubscriptionsResponse {
+  repeated Subscription subscriptions = 1; // All subscription records for the user
+}
+
+message Subscription {
+  int64 subscription_id = 1; // Subscription ID
+  int64 user_id = 2; // User ID
+  int64 start_date = 3; // Start date (Unix timestamp)
+  int64 end_date = 4; // End date (Unix timestamp)
+  string status = 5; // Subscription status (e.g., Active, Expired)
+  int64 payment_id = 6; // Payment ID
+}
+
+// Request and response message definitions for FakePaymentService
+message PaymentRequest {
+  int64 user_id = 1; // User ID
+  string type = 2; // Payment type ("COURSE" or "SUBSCRIPTION")
+  double amount = 3; // Payment amount
+  string payment_method = 4; // Payment method (e.g., "CARD")
+}
+
+message PaymentResponse {
+  int64 user_id = 1; // User ID
+  string type = 2; // Payment type
+  double amount = 3; // Payment amount
+  string payment_method = 4; // Payment method
+  int64 payment_id = 5; // Payment ID
+  int64 payment_date = 6; // Payment date (Unix timestamp)
+  bool payment_successful = 100; // Payment success status
+}
+
+message UserPaymentsRequest {
+  int64 user_id = 1; // User ID
+}
+
+message PaymentsByIdRequest {
+  int64 payment_id = 1; // Payment ID
+}
+
+message PaymentsByIdResponse {
+  PaymentResponse payment = 1; // Payment information
+}
+
+message UserPaymentsResponse {
+  repeated PaymentResponse payments = 1; // All payment records for the user
+}
