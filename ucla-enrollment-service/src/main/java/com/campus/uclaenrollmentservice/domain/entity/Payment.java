@@ -32,6 +32,7 @@ public class Payment {
     @Column(nullable = false)
     private LocalDateTime paymentDate;
 
+    // Null check
     public EnrollmentServiceOuterClass.PaymentResponse toProto() {
         EnrollmentServiceOuterClass.PaymentResponse.Builder builder = EnrollmentServiceOuterClass.PaymentResponse.newBuilder();
 
