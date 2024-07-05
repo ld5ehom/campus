@@ -38,6 +38,19 @@ dependencies {
     testImplementation 'org.springframework:spring-webflux'
     testImplementation 'org.springframework.graphql:spring-graphql-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    implementation 'com.graphql-java:graphql-java-extended-scalars:21.0'
+
+    // gRPC client starter
+    implementation 'net.devh:grpc-client-spring-boot-starter:3.0.0.RELEASE'
+    implementation project(':ucla-grpc-common')
+
+    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+    implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation 'io.micrometer:micrometer-core'
+
 }
 
 dependencyManagement {

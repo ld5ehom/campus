@@ -1,0 +1,176 @@
+# @authenticate allows access to fields or objects only if the user is authenticated.
+directive @authenticate on FIELD_DEFINITION | OBJECT
+
+# @authorize checks if the user has a specific role and permission.
+directive @authorize(role: String, permission: String) on FIELD_DEFINITION | OBJECT
+
+type Query {
+    # Retrieves user information by ID.
+    getUser(userId: ID!): User @authenticate @authorize(role: "user", permission: "read_user")
+
+    # Retrieves all courses.
+    listCourses: [Course]
+
+    # Retrieves specific course information by course ID.
+    getCourse(userId: ID!, courseId: ID!): Course @authenticate
+
+    # Retrieves all sessions of a specific course.
+    listCourseSessions(courseId: ID!): [CourseSession]
+
+    # Checks if the user has access to a specific course.
+    checkCourseAccess(userId: ID!, courseId: ID!): Boolean! @authenticate @authorize(role: "user", permission: "read_purchase")
+
+    # Retrieves all subscription information of a specific user.
+    getUserPlanSubscriptions(userId: ID!): [PlanSubscription] @authenticate @authorize(role: "user", permission: "read_enrollment")
+
+    # Retrieves all enrollment information of a specific user.
+    getUserEnrollments(userId: ID!): [Enrollment] @authenticate @authorize(role: "user", permission: "read_enrollment")
+}
+
+type Mutation {
+    # Creates a new user.
+    createUser(name: String!, email: String!, password: String!): User
+
+    # Updates existing user information.
+    updateUser(userId: ID!, name: String, email: String): User @authenticate @authorize(role: "user", permission: "update_user")
+
+    # Creates a new course.
+    createCourse(title: String!, description: String, instructorId: ID!): Course @authenticate @authorize(role: "admin", permission: "create_course")
+
+    # Updates existing course information.
+    updateCourse(id: ID!, title: String, description: String): Course @authenticate @authorize(role: "admin", permission: "update_course")
+
+    # Adds a new session to a course.
+    addCourseSession(courseId: ID!, title: String!): CourseSession @authenticate @authorize(role: "user", permission: "update_course")
+
+    # Adds a rating to a course.
+    rateCourse(userId: ID!, courseId: ID!, rating: Int!, comment: String): CourseRating @authorize(role: "admin", permission: "update_course")
+
+    # Creates a playback record.
+    startRecord(userId: ID!, fileId: ID!): PlaybackRecord @authenticate @authorize(role: "user", permission: "update_record")
+
+    # Ends a playback record.
+    endRecord(userId: ID!, recordId: ID!): PlaybackRecord @authenticate @authorize(role: "user", permission: "update_record")
+
+    # Logs an event.
+    logEvent(recordId: ID!, userId: ID!, eventType: String!, timestamp: String!): EventLog @authenticate @authorize(role: "user", permission: "update_record")
+
+    # Creates a new payment information for a course.
+    purchaseCourse(userId: ID!, courseId: ID!, amount: Float!, paymentMethod: String!): Payment @authenticate @authorize(role: "user", permission: "update_purchase")
+
+    # Creates new subscription payment information.
+    purchaseSubscription(userId: ID!, amount: Float!, paymentMethod: String!): Payment @authenticate @authorize(role: "user", permission: "update_purchase")
+}
+
+# Type representing user information.
+type User {
+    id: ID!                     # User ID
+    name: String!               # User name
+    email: String!              # User email
+}
+
+# Type representing user login history.
+type UserLoginHistory {
+    id: ID!                     # Login history ID
+    userId: ID!                 # User ID
+    loginTime: String           # Login time
+    ipAddress: String           # IP address of login
+}
+
+# Type representing course information.
+type Course {
+    id: ID!                     # Course ID
+    title: String!              # Course title
+    description: String         # Course description
+    instructorId: ID!           # Instructor ID
+    instructor: User            # Instructor information
+    courseSessions: [CourseSession]    # All sessions belonging to the course
+    ratings: [CourseRating]     # User ratings for the course
+}
+
+# Type representing course session information.
+type CourseSession {
+    id: ID!                     # Session ID
+    courseId: ID!               # Course ID
+    title: String!              # Session title
+    # All files linked to the session
+    files: [CourseSessionFile] @authorize(role: "user", permission: "read_files")
+}
+
+# Type representing course rating information.
+type CourseRating {
+    id: ID!                     # Rating ID
+    courseId: ID!               # Course ID
+    course: Course              # Course information
+    userId: ID!                 # User ID
+    user: User                  # User information
+    rating: Int!                # Rating score
+    comment: String             # Rating comment
+}
+
+# Type representing course session file information.
+type CourseSessionFile {
+    fileId: ID!                 # File ID
+    fileName: String!           # File name
+    fileType: String!           # File type
+    filePath: String!           # File path
+}
+
+# Type representing playback record information.
+type PlaybackRecord {
+    recordId: ID!               # Playback record ID
+    userId: ID!                 # User ID
+    fileId: ID!                 # File ID
+    startTime: String!          # Start time
+    endTime: String             # End time
+}
+
+# Type representing event log information.
+type EventLog {
+    eventId: ID!                # Event ID
+    recordId: ID!               # Playback record ID
+    userId: ID!                 # User ID
+    eventType: String!          # Event type
+    timestamp: String!          # Event timestamp
+}
+
+# Enumeration representing types of payments.
+enum PaymentType {
+    COURSE                      # Course payment
+    SUBSCRIPTION                # Subscription payment
+}
+
+# Type representing payment information.
+type Payment {
+    id: ID!                     # Payment ID
+    userId: ID!                 # User ID
+    user: User!                 # User information
+    paymentType: PaymentType!   # Type of payment
+    amount: Float!              # Payment amount
+    paymentMethod: String!      # Payment method
+    paymentDate: String!        # Payment date
+}
+
+# Type representing course enrollment information.
+type Enrollment {
+    id: ID!                     # Enrollment ID
+    userId: ID!                 # User ID
+    user: User!                 # User information
+    courseId: ID!               # Course ID
+    course: Course!             # Course information
+    paymentId: ID!              # Payment ID
+    payment: Payment!           # Payment information
+    registrationDate: String!   # Registration date
+}
+
+# Type representing user subscription information.
+type PlanSubscription {
+    id: ID!                     # Subscription ID
+    userId: ID!                 # User ID
+    user: User!                 # User information
+    paymentId: ID!              # Payment ID
+    payment: Payment!           # Payment information
+    startDate: String!          # Start date
+    endDate: String!            # End date
+    status: String!             # Subscription status
+}
