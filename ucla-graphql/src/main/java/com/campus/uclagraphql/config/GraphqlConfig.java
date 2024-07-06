@@ -50,7 +50,7 @@ public class GraphqlConfig {
             String fieldName = fieldDefinition.getName();
             log.info("fieldName: {}, childComplexity : {}", fieldName, childComplexity);
 //            if ("expensiveField".equals(fieldName)) {
-//                return childComplexity + 10; // 더 복잡한 필드에 더 높은 점수 부여
+//                return childComplexity + 10;
 //            }
 
             return childComplexity + 1;
