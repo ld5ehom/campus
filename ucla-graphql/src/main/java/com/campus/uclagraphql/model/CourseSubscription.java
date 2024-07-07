@@ -11,11 +11,11 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 
-// Subscription plan
+// Course PlanSubscription
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlanSubscription implements Serializable {
+public class CourseSubscription implements Serializable {
     private Long id;
     private Long userId;
     private User user;
@@ -25,8 +25,8 @@ public class PlanSubscription implements Serializable {
     private String endDate;
     private String status; // Active, Expired
 
-    public static PlanSubscription fromProto(EnrollmentServiceOuterClass.Subscription proto) {
-        PlanSubscription subscription = new PlanSubscription();
+    public static CourseSubscription fromProto(EnrollmentServiceOuterClass.Subscription proto) {
+        CourseSubscription subscription = new CourseSubscription();
         subscription.setId(proto.getSubscriptionId());
         subscription.setUserId(proto.getUserId());
         subscription.setPaymentId(proto.getPaymentId());

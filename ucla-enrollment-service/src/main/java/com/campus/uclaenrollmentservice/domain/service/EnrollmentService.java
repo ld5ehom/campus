@@ -62,7 +62,7 @@ public class EnrollmentService {
         return enrollmentRepository.findAllByUserId(userId);
     }
 
-    public List<Subscription> getUserPlanSubscriptions(long userId) {
+    public List<Subscription> getUserCourseSubscriptions(long userId) {
         return subscriptionRepository.findAllByUserId(userId);
     }
 }

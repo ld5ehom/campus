@@ -116,8 +116,8 @@ public class EnrollmentGrpcService extends EnrollmentServiceGrpc.EnrollmentServi
     }
 
     @Override
-    public void getUserPlanSubscriptions(EnrollmentServiceOuterClass.UserSubscriptionsRequest request, StreamObserver<EnrollmentServiceOuterClass.UserSubscriptionsResponse> responseObserver) {
-        List<Subscription> subscriptions = enrollmentService.getUserPlanSubscriptions(request.getUserId());
+    public void getUserCourseSubscriptions(EnrollmentServiceOuterClass.UserSubscriptionsRequest request, StreamObserver<EnrollmentServiceOuterClass.UserSubscriptionsResponse> responseObserver) {
+        List<Subscription> subscriptions = enrollmentService.getUserCourseSubscriptions(request.getUserId());
         EnrollmentServiceOuterClass.UserSubscriptionsResponse.Builder responseBuilder = EnrollmentServiceOuterClass.UserSubscriptionsResponse.newBuilder();
 
         for (Subscription subscription : subscriptions) {

@@ -2,7 +2,7 @@ package com.campus.uclagraphql.service.dummy;
 
 import com.campus.uclagraphql.model.Enrollment;
 import com.campus.uclagraphql.model.Payment;
-import com.campus.uclagraphql.model.PlanSubscription;
+import com.campus.uclagraphql.model.CourseSubscription;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class DummyEnrollmentService {
 
     private List<Enrollment> enrollments = new ArrayList<>();
-    private List<PlanSubscription> subscriptions = new ArrayList<>();
+    private List<CourseSubscription> subscriptions = new ArrayList<>();
     private List<Payment> payments = new ArrayList<>();
     private AtomicLong enrollmentIdGenerator = new AtomicLong(100);
     private AtomicLong subscriptionIdGenerator = new AtomicLong(100);
@@ -42,8 +42,8 @@ public class DummyEnrollmentService {
         enrollments.add(new Enrollment(enrollmentIdGenerator.incrementAndGet(), 100L, null, 200L, null, paymentId2, null, LocalDateTime.now().minusDays(3).toString()));
 
         // Initialize some dummy subscriptions
-        subscriptions.add(new PlanSubscription(subscriptionIdGenerator.incrementAndGet(), 101L, null, paymentId3, null, LocalDateTime.now().minusDays(300).toString(), LocalDateTime.now().plusDays(65).toString(), "Expired"));
-        subscriptions.add(new PlanSubscription(subscriptionIdGenerator.incrementAndGet(), 102L, null, paymentId4, null, LocalDateTime.now().minusDays(200).toString(), LocalDateTime.now().plusDays(160).toString(), "Expired"));
+        subscriptions.add(new CourseSubscription(subscriptionIdGenerator.incrementAndGet(), 101L, null, paymentId3, null, LocalDateTime.now().minusDays(300).toString(), LocalDateTime.now().plusDays(65).toString(), "Expired"));
+        subscriptions.add(new CourseSubscription(subscriptionIdGenerator.incrementAndGet(), 102L, null, paymentId4, null, LocalDateTime.now().minusDays(200).toString(), LocalDateTime.now().plusDays(160).toString(), "Expired"));
     }
 
     public List<Enrollment> getEnrollmentsByUserId(Long userId) {
@@ -52,7 +52,7 @@ public class DummyEnrollmentService {
                 .collect(Collectors.toList());
     }
 
-    public List<PlanSubscription> getSubscriptionsByUserId(Long userId) {
+    public List<CourseSubscription> getSubscriptionsByUserId(Long userId) {
         return subscriptions.stream()
                 .filter(subscription -> subscription.getUserId().equals(userId))
                 .collect(Collectors.toList());

@@ -22,8 +22,8 @@ service EnrollmentService {
   // GetUserEnrollments retrieves all course enrollment records for a specific user.
   rpc GetUserEnrollments(UserEnrollmentsRequest) returns (UserEnrollmentsResponse);
 
-  // GetUserPlanSubscriptions retrieves all subscription records for a specific user.
-  rpc GetUserPlanSubscriptions(UserSubscriptionsRequest) returns (UserSubscriptionsResponse);
+  // GetUserCourseSubscriptions retrieves all subscription records for a specific user.
+  rpc GetUserCourseSubscriptions(UserSubscriptionsRequest) returns (UserSubscriptionsResponse);
 }
 
 // FakePaymentService provides simulated payment-related services.

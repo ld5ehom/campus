@@ -1,10 +1,9 @@
 package com.campus.uclagraphql.controller;
 
-import com.campus.uclagraphql.model.PlanSubscription;
+import com.campus.uclagraphql.model.CourseSubscription;
 import com.campus.uclagraphql.model.Enrollment;
 import com.campus.uclagraphql.model.Payment;
 import com.campus.uclagraphql.service.EnrollmentService;
-import com.campus.uclagraphql.service.dummy.DummyEnrollmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -28,7 +27,7 @@ public class EnrollmentController {
     }
 
     @QueryMapping
-    public List<PlanSubscription> getUserPlanSubscriptions(@Argument Long userId) {
+    public List<CourseSubscription> getUserCourseSubscriptions(@Argument Long userId) {
         return enrollmentService.getSubscriptionsByUserId(userId);
     }
 

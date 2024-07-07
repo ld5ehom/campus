@@ -21,7 +21,7 @@ type Query {
     checkCourseAccess(userId: ID!, courseId: ID!): Boolean! @authenticate @authorize(role: "user", permission: "read_purchase")
 
     # Retrieves all subscription information of a specific user.
-    getUserPlanSubscriptions(userId: ID!): [PlanSubscription] @authenticate @authorize(role: "user", permission: "read_enrollment")
+    getUserCourseSubscriptions(userId: ID!): [CourseSubscription] @authenticate @authorize(role: "user", permission: "read_enrollment")
 
     # Retrieves all enrollment information of a specific user.
     getUserEnrollments(userId: ID!): [Enrollment] @authenticate @authorize(role: "user", permission: "read_enrollment")
@@ -164,7 +164,7 @@ type Enrollment {
 }
 
 # Type representing user subscription information.
-type PlanSubscription {
+type CourseSubscription {
     id: ID!                     # Subscription ID
     userId: ID!                 # User ID
     user: User!                 # User information
