@@ -88,7 +88,7 @@ public class EnrollmentService {
                 .map(Enrollment::fromProto)
                 .collect(Collectors.toList());
     }
-    
+
     public List<CourseSubscription> getSubscriptionsByUserId(Long userId) {
         EnrollmentServiceOuterClass.UserSubscriptionsRequest request = EnrollmentServiceOuterClass.UserSubscriptionsRequest.newBuilder()
                 .setUserId(userId)
