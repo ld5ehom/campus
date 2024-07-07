@@ -76,7 +76,6 @@ public class CourseService {
         return Arrays.asList(courses);
     }
 
-
     public List<Course> findAllCourses() {
         Course[] courses = restTemplate.getForObject(BASE_URL, Course[].class);
         if (courses == null) {
