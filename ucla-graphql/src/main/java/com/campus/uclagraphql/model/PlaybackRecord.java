@@ -19,6 +19,7 @@ public class PlaybackRecord implements Serializable {
     private String startTime;
     private String endTime;
 
+    // GraphQL/PlaybackService
     public static PlaybackRecord fromProto(PlaybackServiceOuterClass.PlaybackRecord proto) {
         PlaybackRecord record = new PlaybackRecord();
         record.setRecordId(proto.getRecordId());
