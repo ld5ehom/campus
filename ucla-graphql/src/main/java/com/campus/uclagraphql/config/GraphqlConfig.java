@@ -28,7 +28,6 @@ public class GraphqlConfig {
                 .scalar(ExtendedScalars.GraphQLLong)
                 .directive("authenticate", authenticationDirective)
                 .directive("authorize", authorizationDirective);
-
     }
 
     @Bean
