@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Objects;
 
-// User JWT -> GraphQL -> Intercept -> Context 
+// User JWT -> GraphQL -> Intercept -> Context
 @Configuration
 //@Slf4j
 public class UserInterceptor implements WebGraphQlInterceptor {
