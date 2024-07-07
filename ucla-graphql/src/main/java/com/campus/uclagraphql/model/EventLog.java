@@ -28,7 +28,7 @@ public class EventLog implements Serializable {
         return log;
     }
 
-    // GraphQL PlaybackService 
+    // GraphQL PlaybackService
     public static PlaybackServiceOuterClass.EventLog toProto(EventLog domain) {
         return PlaybackServiceOuterClass.EventLog.newBuilder()
                 .setEventId(domain.getEventId())
