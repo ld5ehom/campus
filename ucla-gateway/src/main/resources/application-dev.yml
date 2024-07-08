@@ -1,0 +1,128 @@
+spring:
+  application:
+    name: ucla-gateway
+  data:
+    redis:
+      port: 6379
+      host: ucla-campus-redis
+  cloud:
+    gateway:
+      routes:
+        - id: auth_route
+          uri: lb://ucla-user-service
+          predicates:
+            - Path=/auth/**
+            - Method=POST,GET,OPTIONS
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: authCircuitBreaker
+                fallbackUri: forward:/fallback/authFailure
+
+        - id: file_route
+          uri: lb://ucla-file-manage-service
+          predicates:
+            - Path=/files/**
+            - Method=POST,GET,OPTIONS
+          filters:
+            - AuthenticationFilter
+            - RewritePath=/files/(?<segment>.*),/$\{segment}
+
+        - id: graphql_route
+          uri: lb://ucla-graphql
+          predicates:
+            - Path=/graphql
+            - Method=POST,GET,OPTIONS
+          filters:
+            - AuthenticationFilter
+
+      global-cors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:9999"
+            allowedMethods:
+              - OPTIONS
+              - POST
+              - GET
+              - PATCH
+            allowedHeaders: "*"
+            allowCredentials: true
+
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter.replenishRate: 1 # replenishRate defines the number of requests a user can make in a given period (usually in seconds)
+            redis-rate-limiter.burstCapacity: 5 # burstCapacity defines the maximum number of tokens the token bucket can hold
+            key-resolver: "#{@ipKeyResolver}"
+eureka:
+  client:
+    service-url:
+      defaultZone: http://ucla-discovery:8000/eureka/
+    registerWithEureka: true
+    fetchRegistry: true
+
+    rest-template-timeout:
+      connect-timeout: 5000
+      connect-request-timeout: 8000
+      socket-timeout: 10000
+
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+    org.springframework.http.server.reactive: DEBUG
+    org.springframework.web.reactive: DEBUG
+    reactor.ipc.netty: DEBUG
+    reactor.netty: DEBUG
+    io.github.resilience4j: DEBUG
+
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      authCircuitBreaker:
+        registerHealthIndicator: true
+        slidingWindowSize: 5 # The number of recent calls considered by the circuit breaker
+        minimumNumberOfCalls: 10 # The minimum number of calls that must be made before the circuit breaker state can change
+        permittedNumberOfCallsInHalfOpenState: 10 # The number of calls permitted in the half-open state
+        automaticTransitionFromOpenToHalfOpenEnabled: true # Whether the circuit breaker should automatically transition to the half-open state
+        waitDurationInOpenState: 5000 # The time the circuit breaker should stay open
+        failureRateThreshold: 50 # The failure rate threshold; if this percentage of calls fail, the circuit breaker opens
+        eventConsumerBufferSize: 10
+        record-exceptions:
+          - java.util.concurrent.TimeoutException
+          - org.springframework.cloud.gateway.support.NotFoundException
+          - io.github.resilience4j.circuitbreaker.CallNotPermittedException
+#        ignoreExceptions: # The exception types that the circuit breaker should ignore
+#          - org.springframework.web.client.HttpClientErrorException
+
+resilience4j.timelimiter:
+  configs:
+    default:
+      timeoutDuration: 5s
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+    propagation:
+      consume: b3
+      produce: b3_multi
+  zipkin:
+    tracing:
+      endpoint: "http://ucla-campus-zipkin:9411/api/v2/spans"
+  endpoints:
+    web:
+      exposure:
+        include:
+          - info
+          - health
+          - loggers
+          - mappings
+          - metrics
+          - shutdown
+          - prometheus
+          - circuitbreakers
+
+server:
+  port: 9000

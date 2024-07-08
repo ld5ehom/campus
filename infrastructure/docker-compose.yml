@@ -1,7 +1,11 @@
 version: '3'
-
+volumes:
+  redis-data:
+  es-data:
+  prometheus-data:  # Prometheus data volume
+  grafana-data:  # Grafana data volume
 services:
-  db:
+  ucla-campus-mysql:
     image: mysql:8.0
     container_name: ucla-campus-mysql
     restart: always
@@ -14,4 +18,237 @@ services:
       - ./db/mysql/data:/var/lib/mysql
       - ./db/mysql/init:/docker-entrypoint-initdb.d
     platform: linux/x86_64
+    networks:
+      - ucla-campus-network
 
+  ucla-campus-redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - ucla-campus-network
+
+  ucla-campus-elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    networks:
+      - ucla-campus-network
+
+  ucla-campus-kibana:
+    image: docker.elastic.co/kibana/kibana:7.10.1
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://ucla-campus-elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - ucla-campus-elasticsearch
+    networks:
+      - ucla-campus-network
+
+  ucla-campus-zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    environment:
+      - STORAGE_TYPE=elasticsearch
+      - ES_HOSTS=http://ucla-campus-elasticsearch:9200
+    ports:
+      - "9411:9411"
+    depends_on:
+      - ucla-campus-elasticsearch
+    networks:
+      - ucla-campus-network
+
+  ucla-campus-prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus/:/etc/prometheus/  # Map local directory to Prometheus config file directory
+      - prometheus-data:/prometheus  # Use volume for Prometheus data storage
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'  # Config file path
+      - '--storage.tsdb.path=/prometheus'  # Data storage path
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'  # Console library path
+      - '--web.console.templates=/usr/share/prometheus/consoles'  # Console template path
+    ports:
+      - 9090:9090  # Map local host's port 9090 to container's port 9090
+    links:
+      - ucla-campus-cadvisor:ucla-campus-cadvisor  # Link with cAdvisor
+      - ucla-campus-alertmanager:ucla-campus-alertmanager  # Link with Alertmanager
+    depends_on:
+      - ucla-campus-cadvisor  # Ensure cAdvisor starts first
+      # - pushgateway  # Commented out Pushgateway dependency
+    networks:
+      - back-tier  # Connect to back-tier network
+      - ucla-campus-network
+    restart: always  # Always restart
+
+  ucla-campus-alertmanager:
+    image: prom/alertmanager
+    ports:
+      - 9093:9093  # Map local host's port 9093 to container's port 9093
+    volumes:
+      - ./alertmanager/:/etc/alertmanager/  # Map local directory to Alertmanager config file directory
+    networks:
+      - back-tier  # Connect to back-tier network
+    restart: always  # Always restart
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'  # Config file path
+      - '--storage.path=/alertmanager'  # Storage path
+
+  ucla-campus-node-exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    volumes:
+      - /proc:/host/proc:ro # Map /proc directory as read-only
+      - /sys:/host/sys:ro  # Map /sys directory as read-only
+    command:
+      - '--path.rootfs=/host'  # Set rootfs path
+      - '--path.procfs=/host/proc'  # Set procfs path
+      - '--path.sysfs=/host/sys'  # Set sysfs path
+      - --collector.filesystem.ignored-mount-points
+      - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"  # Pattern for ignored mount points
+    ports:
+      - "9100:9100"  # Map local host's port 9100 to container's port 9100
+    networks:
+      - back-tier  # Connect to back-tier network
+    restart: always  # Always restart
+    deploy:
+      mode: global  # Set to global mode to run on all nodes in the cluster
+
+  ucla-campus-cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.45.0
+    container_name: cadvisor
+    privileged: true  # Run in privileged mode
+    devices:
+      - /dev/kmsg:/dev/kmsg  # Map /dev/kmsg device
+    volumes:
+      - /var/run:/var/run:ro  # Map /var/run directory as read-only
+      - /sys:/sys:ro  # Map /sys directory as read-only
+      - /var/lib/docker/:/var/lib/docker:ro  # Map /var/lib/docker directory as read-only
+      - /var/run/docker.sock:/var/run/docker.sock:ro  # Map Docker socket as read-only
+      - /etc/machine-id:/etc/machine-id:ro  # Map /etc/machine-id file as read-only
+      - /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro  # Map /var/lib/dbus/machine-id file as read-only
+    restart: unless-stopped  # Restart unless stopped
+    expose:
+      - 8085  # Expose port 8085
+    networks:
+      - back-tier  # Connect to back-tier network
+      - ucla-campus-network
+    labels:
+      org.label-schema.group: "monitoring"  # Monitoring group label
+
+  ucla-campus-grafana:
+    image: grafana/grafana
+    user: "472"  # Set user ID
+    depends_on:
+      - ucla-campus-prometheus  # Ensure Prometheus starts first
+    ports:
+      - 3000:3000  # Map local host's port 3000 to container's port 3000
+    volumes:
+      - grafana-data:/var/lib/grafana  # Map Grafana data directory
+      - ./grafana/provisioning/:/etc/grafana/provisioning/  # Map Grafana config directory
+    env_file:
+      - ./grafana/config.monitoring  # Environment variables file
+    networks:
+      - back-tier  # Connect to back-tier network
+      - front-tier  # Connect to front-tier network
+      - ucla-campus-network
+    restart: always  # Always restart
+
+  ucla-discovery:
+    image: ucla-discovery:latest
+    container_name: ucla-discovery
+    ports:
+      - "8000:8000"
+    networks:
+      - ucla-campus-network
+
+  ucla-gateway:
+    image: ucla-gateway:latest
+    container_name: ucla-gateway
+    depends_on:
+      - ucla-discovery
+    ports:
+      - "9000:8080"
+    networks:
+      - ucla-campus-network
+
+  ucla-graphql:
+    image: ucla-graphql:latest
+    container_name: ucla-graphql
+    ports:
+      - "8080:8080"
+    depends_on:
+      - ucla-discovery
+    networks:
+      - ucla-campus-network
+
+  ucla-course-service:
+    image: ucla-course-service:latest
+    container_name: ucla-course-service
+    ports:
+      - "8081:8080"
+    depends_on:
+      - ucla-discovery
+    networks:
+      - ucla-campus-network
+
+  ucla-enrollment-service:
+    image: ucla-enrollment-service:latest
+    container_name: ucla-enrollment-service
+    ports:
+      - "8082:8080"
+      - "9092:9090" #grpc
+    depends_on:
+      - ucla-discovery
+    networks:
+      - ucla-campus-network
+
+  ucla-file-manage-service:
+    image: ucla-file-manage-service:latest
+    container_name: ucla-file-manage-service
+    ports:
+      - "8083:8080"
+    volumes:
+      - ./videos:/videos
+    depends_on:
+      - ucla-discovery
+    networks:
+      - ucla-campus-network
+
+  ucla-playback-service:
+    image: ucla-playback-service:latest
+    container_name: ucla-playback-service
+    ports:
+      - "8084:8080"
+      - "9094:9090" #grpc
+    depends_on:
+      - ucla-discovery
+    networks:
+      - ucla-campus-network
+
+  ucla-user-service:
+    image: ucla-user-service:latest
+    container_name: ucla-user-service
+    ports:
+      - "8085:8080"
+    depends_on:
+      - ucla-discovery
+    networks:
+      - ucla-campus-network
+
+networks:
+  back-tier:  # Internal network for Prometheus stack
+    driver: bridge
+  front-tier:  # Network between Grafana and the outside
+  ucla-campus-network:
+    driver: bridge
