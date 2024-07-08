@@ -33,6 +33,7 @@ public class EnrollmentDataResolver {
         this.courseService = courseService;
         this.enrollmentService = enrollmentService;
 
+        // BatchLoaderRegistry registry (DataLoader)
         registry.forTypePair(Long.class, Course.class).registerMappedBatchLoader(
                 (courseIds, env) -> {
                     List<Long> ids = courseIds.stream().toList();
@@ -56,8 +57,10 @@ public class EnrollmentDataResolver {
 //        return courseService.findCourseById(enrollment.getCourseId()).orElse(null);
 //    }
 
+    // GraphQL DataLoader update
     @SchemaMapping(typeName = "Enrollment", field = "course")
     public CompletableFuture<Course> getCourse(Enrollment enrollment, DataLoader<Long, Course> loader) {
+//        log.info("### ---getCourse {}---", enrollment.getCourseId());
         return loader.load(enrollment.getCourseId());
     }
 

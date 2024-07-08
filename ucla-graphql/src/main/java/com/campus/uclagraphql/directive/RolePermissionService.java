@@ -115,7 +115,7 @@ public class RolePermissionService {
                 throw new UnauthorizedException("Unauthorized");
             }
         }));
-        
+
         adminPermissions.add(new PermissionAction("update_user", env -> {
             String headerUserRole = env.getGraphQlContext().get("X-USER-ROLE");
 

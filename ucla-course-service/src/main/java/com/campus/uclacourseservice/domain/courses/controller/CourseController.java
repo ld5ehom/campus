@@ -38,10 +38,11 @@ public class CourseController {
     public ResponseEntity<Course> getCourseById(
             @PathVariable Long courseId) {
         Course course = courseService.getCourseById(courseId)
-                .orElseThrow(() -> new RuntimeException("ID : " + courseId + "인 코스를 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException("Cannot Find a course with ID : " + courseId ));
         return ResponseEntity.ok(course);
     }
 
+    // GraphQL DataLoader Update
     @GetMapping
     public ResponseEntity<List<Course>> getAllCourses(
             @RequestParam(required = false) List<Long> courseId) {
@@ -49,6 +50,7 @@ public class CourseController {
         if (courseId == null || courseId.isEmpty()) {
             courses = courseService.getAllCourses();
         } else {
+            // courseID = 100 & course = 200
             courses = courseService.getCourseByIds(courseId);
         }
 
