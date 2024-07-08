@@ -7,6 +7,6 @@
 - DBeaver : https://dbeaver.io/
 - ERD Editor : https://erd-editor.io/
 - Insomnia : https://insomnia.rest/
-
+- GraphQL Java : https://www.graphql-java.com/documentation/getting-started
 
 

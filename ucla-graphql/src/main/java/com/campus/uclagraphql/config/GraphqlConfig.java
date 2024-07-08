@@ -30,6 +30,7 @@ public class GraphqlConfig {
                 .directive("authorize", authorizationDirective);
     }
 
+    // GraphQL Instrument Query Update 
     @Bean
     public Instrumentation maxQueryComplexityInstrumentation() {
         MaxQueryComplexityInstrumentation complexityInstrumentation = new MaxQueryComplexityInstrumentation(100, new CustomFieldComplexityCalculator());
