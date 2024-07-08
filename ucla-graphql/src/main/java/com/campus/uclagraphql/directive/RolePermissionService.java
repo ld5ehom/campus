@@ -31,6 +31,7 @@ public class RolePermissionService {
                 throw new UnauthorizedException("Unauthorized");
             }
         }));
+
         userPermissions.add(new PermissionAction("update_user", env -> {
             Long headerUserId = Long.valueOf(env.getGraphQlContext().get("X-USER-ID"));
             Long argumentUserId = Long.valueOf(env.getArgument("userId"));
@@ -39,8 +40,8 @@ public class RolePermissionService {
                 throw new UnauthorizedException("Unauthorized");
             }
         }));
-        userPermissions.add(new PermissionAction("read_purchase", env -> {
 
+        userPermissions.add(new PermissionAction("read_purchase", env -> {
             Long headerUserId = Long.valueOf(env.getGraphQlContext().get("X-USER-ID"));
             long argumentUserId = Long.parseLong(env.getArgument("userId"));
             long argumentCourseId = Long.parseLong(env.getArgument("courseId"));
@@ -53,6 +54,7 @@ public class RolePermissionService {
                 throw new UnauthorizedException("Unauthorized");
             }
         }));
+
         userPermissions.add(new PermissionAction("read_files", env -> {
             long userId = Long.parseLong(env.getGraphQlContext().get("X-USER-ID"));
             CourseSession session = env.getSource();
@@ -62,6 +64,7 @@ public class RolePermissionService {
                 throw new UnauthorizedException("Unauthorized");
             }
         }));
+
         userPermissions.add(new PermissionAction("read_enrollment", env -> {
             long headerUserId = Long.parseLong(env.getGraphQlContext().get("X-USER-ID"));
             long argumentUserId = Long.parseLong(env.getArgument("userId"));
@@ -70,6 +73,7 @@ public class RolePermissionService {
                 throw new UnauthorizedException("Unauthorized");
             }
         }));
+
         userPermissions.add(new PermissionAction("update_course", env -> {
             String headerUserRole = env.getGraphQlContext().get("X-USER-ROLE");
 
@@ -77,6 +81,7 @@ public class RolePermissionService {
                 throw new UnauthorizedException("Unauthorized");
             }
         }));
+
         userPermissions.add(new PermissionAction("update_record", env -> {
             String headerUserRole = env.getGraphQlContext().get("X-USER-ROLE");
 
@@ -84,6 +89,7 @@ public class RolePermissionService {
                 throw new UnauthorizedException("Unauthorized");
             }
         }));
+
         userPermissions.add(new PermissionAction("update_purchase", env -> {
             long headerUserId = Long.parseLong(env.getGraphQlContext().get("X-USER-ID"));
             long argumentUserId = Long.parseLong(env.getArgument("userId"));
@@ -101,6 +107,7 @@ public class RolePermissionService {
                 throw new UnauthorizedException("Unauthorized");
             }
         }));
+
         adminPermissions.add(new PermissionAction("update_course", env -> {
             String headerUserRole = env.getGraphQlContext().get("X-USER-ROLE");
 
@@ -108,6 +115,7 @@ public class RolePermissionService {
                 throw new UnauthorizedException("Unauthorized");
             }
         }));
+        
         adminPermissions.add(new PermissionAction("update_user", env -> {
             String headerUserRole = env.getGraphQlContext().get("X-USER-ROLE");
 
@@ -121,6 +129,7 @@ public class RolePermissionService {
     }
 
     public boolean checkPermission(String role, String permission, DataFetchingEnvironment env) {
+        // log.info("checkPermission: {}, {}", role, permission);
         Set<PermissionAction> actions = rolePermissions.get(role);
         if (actions != null) {
             for (PermissionAction action : actions) {
