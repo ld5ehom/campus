@@ -5,7 +5,6 @@ import com.campus.uclagraphql.model.CourseSubscription;
 import com.campus.uclagraphql.model.User;
 import com.campus.uclagraphql.service.EnrollmentService;
 import com.campus.uclagraphql.service.UserService;
-import com.campus.uclagraphql.service.dummy.DummyUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
