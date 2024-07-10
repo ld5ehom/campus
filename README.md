@@ -11,11 +11,120 @@
 ### Website 
 - GraphQL Java : https://www.graphql-java.com/documentation/getting-started
 - resilience4j : https://resilience4j.readme.io/docs/getting-started
+- Prometheus : https://github.com/vegasbrianc/prometheus
+
+### Description
+-   Developed a system based on Microservices Architecture (MSA) that integrates and aggregates data from RESTful API, gRPC, and GraphQL, enabling students to view course information in real-time and register for courses.
+-   Implemented a Course Management system with RESTful API for course creation, management, session handling, and evaluations, along with course playback information, enrollment, and playback services using gRPC, and aggregated data from these components using GraphQL.
+-   Collected component metrics with Prometheus and visualized them using Grafana, while also collecting transaction data from each component using Zipkin, storing it in Elasticsearch, and visualizing it through Kibana.
+-   Utilized: Java, Spring Boot, MySQL, REST, gRPC, GraphQL, Redis, ElasticSearch, Grafana, Prometheus
 
 ### Start 
 - UclaDiscoveryApplication 
 - Other Application
 - docker
 - zipkin
+
+### ElasticSearch 
+- export ES_JAVA_HOME=$(/usr/libexec/java_home)
+- /opt/homebrew/Cellar/elasticsearch-full/7.17.4/bin/elasticsearch
+
+### Prometheus 
+- prometheus --config.file=/usr/local/etc/prometheus.yml
+
+### Grafana
+- brew services start grafana
+
+### Spring Cloud Gateway
+- https://github.com/spring-cloud/spring-cloud-gateway
+- ID : grafana.net/dashboard/import
+- -> Import via dashboard JSON model
+- https://github.com/spring-cloud/spring-cloud-gateway/blob/main/docs/src/main/asciidoc/gateway-grafana-dashboard.json
+
+### Prometheus
+- JVM Dashboard ID : 4701 
+
+### Docker Image Build
+- Start
+```
+kubectl get pods 
+```
+
+- Execute from the root directory
+```
+#!/bin/bash
+```
+
+- Build Docker images for each module
+```
+docker build -t ucla-discovery:latest -f ucla-discovery/Dockerfile .
+docker build -t ucla-gateway:latest -f ucla-gateway/Dockerfile .
+
+docker build -t ucla-course-service:latest -f ucla-course-service/Dockerfile .
+docker build -t ucla-file-manage-service:latest -f ucla-file-manage-service/Dockerfile .
+docker build -t ucla-user-service:latest -f ucla-user-service/Dockerfile .
+
+docker build -t ucla-enrollment-service:latest -f ucla-enrollment-service/Dockerfile .
+docker build -t ucla-playback-service:latest -f ucla-playback-service/Dockerfile .
+docker build -t ucla-graphql:latest -f ucla-graphql/Dockerfile .
+
+docker image list 
+```
+
+### build-docker-image.sh
+```
+chmod 755 ./build-docker-image.sh
+./build-docker-image.sh
+```
+
+### Ports
+```angular2html
+ucla-discovery
+8000:8000
+
+ucla-gateway
+9000:8080
+
+ucla-graphql
+8080:8080
+
+ucla-course-service
+8081:8080
+
+ucla-enrollment-service
+8082:8080
+
+ucla-file-manage-service
+8083:8080
+
+ucla-playback-service
+8084:8080
+
+ucla-user-service
+8085:8080
+```
+
+### DB
+```angular2html
+ucla-campus-mysql
+
+mysql -u root -p (ucla)
+show databases;
+
+CREATE DATABASE ucla_course;
+CREATE DATABASE ucla_user;
+CREATE DATABASE ucla_files;
+CREATE DATABASE ucla_playback;
+CREATE DATABASE ucla_enrollment;
+
+CREATE USER 'taewook'@'%' IDENTIFIED BY 'campus';
+
+GRANT ALL PRIVILEGES ON ucla_course.* TO 'taewook'@'%';
+GRANT ALL PRIVILEGES ON ucla_user.* TO 'taewook'@'%';
+GRANT ALL PRIVILEGES ON ucla_files.* TO 'taewook'@'%';
+GRANT ALL PRIVILEGES ON ucla_playback.* TO 'taewook'@'%';
+GRANT ALL PRIVILEGES ON ucla_enrollment.* TO 'taewook'@'%';
+
+```
 
 

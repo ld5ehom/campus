@@ -18,9 +18,9 @@ public class DummyUserService {
     }
     private void initData() {
         // Adding dummy users
-        users.add(new User(counter.incrementAndGet(), "John Doe", "john.doe@example.com", "password123"));
-        users.add(new User(counter.incrementAndGet(), "Jane Smith", "jane.smith@example.com", "password456"));
-        users.add(new User(counter.incrementAndGet(), "Alice Johnson", "alice.johnson@example.com", "password789"));
+        users.add(new User(counter.incrementAndGet(), "Taewook Park", "ld5ehom@g.ucla.edu", "password123"));
+        users.add(new User(counter.incrementAndGet(), "TaeWook Park", "ld5ehom@gmail.com", "password456"));
+        users.add(new User(counter.incrementAndGet(), "Carey Nachenberg", "climberkip@gmail.com", "password789"));
     }
 
     public List<User> findAll() {

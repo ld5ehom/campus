@@ -92,6 +92,7 @@ services:
       - ucla-campus-network
     restart: always  # Always restart
 
+  #infrastructure alertmanager
   ucla-campus-alertmanager:
     image: prom/alertmanager
     ports:
@@ -164,6 +165,9 @@ services:
       - ucla-campus-network
     restart: always  # Always restart
 
+
+### Docker
+
   ucla-discovery:
     image: ucla-discovery:latest
     container_name: ucla-discovery
@@ -213,6 +217,7 @@ services:
     networks:
       - ucla-campus-network
 
+# Video Service
   ucla-file-manage-service:
     image: ucla-file-manage-service:latest
     container_name: ucla-file-manage-service
