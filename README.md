@@ -13,6 +13,7 @@
 - resilience4j : https://resilience4j.readme.io/docs/getting-started
 - Prometheus : https://github.com/vegasbrianc/prometheus
 - Kubernetes : https://kubernetes.io/docs/concepts/architecture
+- Helm : https://helm.sh/docs/
 
 ### Description
 -   Developed a system based on Microservices Architecture (MSA) that integrates and aggregates data from RESTful API, gRPC, and GraphQL, enabling students to view course information in real-time and register for courses.
@@ -193,3 +194,31 @@ kubectl apply -f cluster-role-binding.yaml
 ```angular2html
 kubectl -n kubernetes-dashboard create token dashboard-admin
 ```
+
+### Helm 
+```angular2html
+helm install [RELEASE_NAME] [CHART]
+helm list
+helm status [RELEASE_NAME]
+helm upgrade [RELEASE_NAME] [CHART]
+helm rollback [RELEASE_NAME] [REVISION]
+helm uninstall [RELEASE_NAME]
+helm search repo [KEYWORD]
+helm repo add [REPO_NAME] [URL]
+helm repo update
+helm template [RELEASE_NAME] [CHART]
+helm show chart [CHART]
+```
+
+### Helm Chart
+```angular2html
+Chart_name/
+├── Chart.yaml
+├── values.yaml
+├── templates/
+│   ├── deployment.yaml
+│   ├── service.yaml
+│   └── ingress.yaml 
+└── .helmignore
+```
+
