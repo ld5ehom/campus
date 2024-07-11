@@ -8,10 +8,11 @@
 - ERD Editor : https://erd-editor.io/
 - Insomnia : https://insomnia.rest/
 
-### Website 
+### Reference site  
 - GraphQL Java : https://www.graphql-java.com/documentation/getting-started
 - resilience4j : https://resilience4j.readme.io/docs/getting-started
 - Prometheus : https://github.com/vegasbrianc/prometheus
+- Kubernetes : https://kubernetes.io/docs/concepts/architecture
 
 ### Description
 -   Developed a system based on Microservices Architecture (MSA) that integrates and aggregates data from RESTful API, gRPC, and GraphQL, enabling students to view course information in real-time and register for courses.
@@ -127,4 +128,68 @@ GRANT ALL PRIVILEGES ON ucla_enrollment.* TO 'taewook'@'%';
 
 ```
 
+### Kubernetes
+```angular2html
+kubectl
+kubectl cluster-info
+kubectl get all 
 
+kubectl edit pod [pod-name]
+kubectl logs [pod-name]
+
+kubectl get namespaces
+kubectl create namespace [namespace-name]
+
+kubectl config view
+kubectl config current-context
+kubectl config use-context [context-name]
+```
+
+### Kubernetes Dashboard
+```angular2html
+- install
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.4.0/aio/deploy/recommended.yaml
+
+kubectl get deployment -n kubernetes-dashboard
+
+-proxy
+kubectl proxy
+
+http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/login
+
+```
+
+### Kubernetes service-account 
+```angular2html
+-- service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dashboard-admin
+  namespace: kubernetes-dashboard
+```
+```angular2html
+kubectl apply -f service-account.yaml
+```
+
+```angular2html
+-- cluster-role-binding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: dashboard-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: dashboard-admin
+  namespace: kubernetes-dashboard
+```
+```angular2html
+kubectl apply -f cluster-role-binding.yaml
+```
+```angular2html
+kubectl -n kubernetes-dashboard create token dashboard-admin
+```
