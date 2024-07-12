@@ -250,7 +250,7 @@ helm upgrade ucla-course-service .
 ```
 ```angular2html
 kubectl proxy
-http://localhost:8001/api/v1/namespaces/default/services/next-discovery:8000/proxy/
+http://localhost:8001/api/v1/namespaces/default/services/ucla-discovery:8000/proxy/
 ctrl + c
 ```
 ### Kubernetes ingress-nginx
