@@ -3291,8 +3291,8 @@
       {
         "current": {
           "selected": true,
-          "text": "next-discovery",
-          "value": "next-discovery"
+          "text": "ucla-discovery",
+          "value": "ucla-discovery"
         },
         "datasource": {
           "type": "prometheus",

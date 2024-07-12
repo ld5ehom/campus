@@ -2,6 +2,7 @@
 - ld5ehom@gmail.com
 - https://www.linkedin.com/in/ld5ehom
 
+
 ### Tool
 - Docker : https://www.docker.com/products/docker-desktop/
 - DBeaver : https://dbeaver.io/
@@ -13,13 +14,16 @@
 - resilience4j : https://resilience4j.readme.io/docs/getting-started
 - Prometheus : https://github.com/vegasbrianc/prometheus
 - Kubernetes : https://kubernetes.io/docs/concepts/architecture
+- Kubernetes ingress-nginx : https://kubernetes.github.io/ingress-nginx/deploy/#docker-desktop
 - Helm : https://helm.sh/docs/
 
 ### Description
+```
 -   Developed a system based on Microservices Architecture (MSA) that integrates and aggregates data from RESTful API, gRPC, and GraphQL, enabling students to view course information in real-time and register for courses.
 -   Implemented a Course Management system with RESTful API for course creation, management, session handling, and evaluations, along with course playback information, enrollment, and playback services using gRPC, and aggregated data from these components using GraphQL.
 -   Collected component metrics with Prometheus and visualized them using Grafana, while also collecting transaction data from each component using Zipkin, storing it in Elasticsearch, and visualizing it through Kibana.
 -   Utilized: Java, Spring Boot, MySQL, REST, gRPC, GraphQL, Redis, ElasticSearch, Grafana, Prometheus
+```
 
 ### Start 
 - UclaDiscoveryApplication 
@@ -28,20 +32,29 @@
 - zipkin
 
 ### ElasticSearch 
-- export ES_JAVA_HOME=$(/usr/libexec/java_home)
-- /opt/homebrew/Cellar/elasticsearch-full/7.17.4/bin/elasticsearch
+```angular2html
+export ES_JAVA_HOME=$(/usr/libexec/java_home)
+/opt/homebrew/Cellar/elasticsearch-full/7.17.4/bin/elasticsearch
+```
 
 ### Prometheus 
-- prometheus --config.file=/usr/local/etc/prometheus.yml
+```angular2html
+prometheus --config.file=/usr/local/etc/prometheus.yml
+```
 
 ### Grafana
-- brew services start grafana
+```
+brew services start grafana
+```
 
 ### Spring Cloud Gateway
-- https://github.com/spring-cloud/spring-cloud-gateway
-- ID : grafana.net/dashboard/import
-- -> Import via dashboard JSON model
-- https://github.com/spring-cloud/spring-cloud-gateway/blob/main/docs/src/main/asciidoc/gateway-grafana-dashboard.json
+```angular2html
+https://github.com/spring-cloud/spring-cloud-gateway
+ID : grafana.net/dashboard/import
+-> Import via dashboard JSON model
+
+https://github.com/spring-cloud/spring-cloud-gateway/blob/main/docs/src/main/asciidoc/gateway-grafana-dashboard.json
+```
 
 ### Prometheus
 - JVM Dashboard ID : 4701 
@@ -220,5 +233,36 @@ Chart_name/
 │   ├── service.yaml
 │   └── ingress.yaml 
 └── .helmignore
+```
+```angular2html
+cd..
+ls
+teo@TaeWookui-Macmini infrastructure-k8s % cd ucla-course-service
+teo@TaeWookui-Macmini ucla-course-service % helm install ucla-course-service .
+```
+```angular2html
+kubectl get services
+kubectl get deployments
+kubectl get deployments ucla-course-service
+```
+```angular2html
+helm upgrade ucla-course-service .
+```
+```angular2html
+kubectl proxy
+http://localhost:8001/api/v1/namespaces/default/services/next-discovery:8000/proxy/
+ctrl + c
+```
+### Kubernetes ingress-nginx
+```angular2html
+helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace
+```
+```angular2html
+teo@TaeWookui-Macmini infrastructure-k8s % cd ucla-ingress
+teo@TaeWookui-Macmini ucla-ingress % kubectl apply -f ingress.yaml
+teo@TaeWookui-Macmini ucla-ingress % kubectl get ingress
+
 ```
 
