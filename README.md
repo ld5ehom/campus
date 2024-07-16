@@ -166,8 +166,35 @@ Service Components Definition:
     - session_files
 ```
 -----
+## Content Playback Information Service Component Design
+### - gRPC Service Design
+```protobuf
+// Service Definition
+service PlaybackService {}
+```
 
-## Ucla Course Database
+### - gRPC Model Design
+```protobuf
+message PlaybackRecord {}
+message StartRecordRequest {}
+message StartRecordResponse {}
+message EndRecordRequest {}
+message EndRecordResponse {}
+message EventLog {}
+message LogEventRequest {}
+message LogEventResponse {}
+```
+
+### - Database Structure
+```angular2html
+  Database Name: ucla_playback
+  Following the Database per Service pattern.
+  Tables related to playback records are created in the database:
+    - playback_records
+    - event_logs
+```
+-----
+## Create Database
 ```angular2html
 ucla-campus-mysql
 
