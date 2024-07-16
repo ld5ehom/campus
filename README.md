@@ -2,7 +2,6 @@
 - ld5ehom@gmail.com
 - https://www.linkedin.com/in/ld5ehom
 
-
 ### Tool
 - Docker : https://www.docker.com/products/docker-desktop/
 - DBeaver : https://dbeaver.io/
@@ -18,12 +17,42 @@
 - Helm : https://helm.sh/docs/
 
 ### Description
-```
 -   Developed a system based on Microservices Architecture (MSA) that integrates and aggregates data from RESTful API, gRPC, and GraphQL, enabling students to view course information in real-time and register for courses.
 -   Implemented a Course Management system with RESTful API for course creation, management, session handling, and evaluations, along with course playback information, enrollment, and playback services using gRPC, and aggregated data from these components using GraphQL.
 -   Collected component metrics with Prometheus and visualized them using Grafana, while also collecting transaction data from each component using Zipkin, storing it in Elasticsearch, and visualizing it through Kibana.
 -   Utilized: Java, Spring Boot, MySQL, REST, gRPC, GraphQL, Redis, ElasticSearch, Grafana, Prometheus
+
+
+```angular2html
+Architecture Diagram/
+├─ Client
+│   └─ API Gateway(Spring) <─> User Management Service(Spring)
+│
+├─ Service Registry (Spring)
+│
+├─ Microservices Architecture (MSA)
+│  ├─ (Query) GraphQL
+│  │   └─ Aggregation from/
+│  │      ├─ (gRPC) Enrollment Service
+│  │      ├─  (REST) Course Management Service
+│  │      └─ (gRPC) Playback Service
+│  │
+│  ├─ (gRPC) Enrollment Service 
+│  ├─ (REST) Course Management Service 
+│  ├─ (gRPC) Playback Service 
+│  └─ (RAW/MP4)Content File Management Service
+│
+├─ Distributed Tracing/
+│  ├─ Zipkin
+│  ├─ Elasticsearch
+│  ├─ Logstash
+│  └─ Kibana
+│
+└─ Monitoring/ 
+   ├─ Grafana
+   └─ Prometheus
 ```
+
 
 ### Start
 - UclaDiscoveryApplication
