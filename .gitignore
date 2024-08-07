@@ -36,3 +36,6 @@ out/
 ### VS Code ###
 .vscode/
 /infrastructure/db/mysql/
+
+.DS_Store
+HELP.md
